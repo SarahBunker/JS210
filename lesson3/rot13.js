@@ -27,6 +27,8 @@ if characters is a letter
 
 */
 
+// jshint esversion: 6
+
 function isLetter(char) {
   return char.match(/[A-Z]/i);
 }
@@ -49,13 +51,12 @@ function rot13(string) {
     }
 
     let code = string.charCodeAt(index);
-    // console.log(`code ${code}, newcode ${code + ROTATION}`)
     code += ROTATION;
 
     if (cipherWrapsAlphabet(char)) {
       code -= NUM_LETTERS_ALPHABET;
     }
-    // console.log(`char ${char}, newchar ${String.fromCharCode(code)}`)
+
     char = String.fromCharCode(code);
     newString += char;
   }
