@@ -1,0 +1,167 @@
+// #1
+
+var myVar
+function someFunction() {
+  var myVar
+
+  myVar = 'This is local';
+}
+
+myVar = 'This is global';
+
+someFunction();
+console.log(myVar);
+
+// This code will output 'This is global'. The variable `myVar` on line 1 and 4 are separate variables. `myVar` on line 4 is declared with `var` setting it to the scope of the function `someFunction`. Without the `var` on line 4, calling `someFunction` would reassign the local variable `myVar` declared on line 1. Instead this creates a variable contained to the scope of the function and `myVar` still references `This is global` when it is passed to `console.log` which is then what is logged to the console.
+
+--------------------------------
+
+// #2
+
+var myVar = 'This is global';
+
+function someFunction() {
+  var myVar = 'This is local';
+  console.log(myVar);
+}
+
+someFunction();
+
+// This code will output "This is local". There are two variables with the name `myVar`. One is declared on line 1 and has a global scope. The other is declared on line 4 and has a local scope. It is scoped to the function. Within the function both variables available, but priority is given to the varaible with local scope. On line 5 the variable `myVar` is passed to `console.log`. This is within the inner scope and so `myVar` references the string `'This is local'` which is then logged to the console.
+
+----------------------------
+
+// #3
+
+var myVar = 'This is global';
+
+function someFunction() {
+  myVar = 'This is local';
+}
+
+someFunction();
+console.log(myVar);
+
+// This code will output 'This is local'. This is because there is only one variable. It is the globally scoped variable on line 1. On line 1 the variable `myVar` is declared and assigned to the string `This is global`. On line 7 the function `someFunction` is called which reassigns the variable `myVar` to the string `This is local`. Finally on line 8 the variable `myVar` is passed to `console.log`. At this point `myVar` refers to `This is local` and so that is logged to the console. This demonstrates that the inner scope such as the inner scope of the function definition can access and modify variables declared in the outer scope.
+
+
+------------------------------
+
+// #4
+
+var myVar = 'This is global';
+
+function someFunction() {
+  console.log(myVar);
+}
+
+someFunction();
+
+// This code will output `This is global`. On line 1 the variable `myVar` is defined with global scope. This means when the function `someFunction` is invoked on line 7 and within the method definition the variable `myVar` is passed to `console.log` that there isn't an error. Because `myVar` is in an outer scope to the inner scope of the function it is accesible and modifiable. In this case we are accesing the value it references to log to the console.
+
+
+------------------------------------
+
+// #5
+
+function someFunction() {
+  myVar = 'This is global';
+}
+
+someFunction();
+console.log(myVar);
+
+// This code will output `This is global`. As the text indicates on line 2 we are declaring? a global variable. Because we don't use `let`, `const`, or `var` to declare this variable is automatically assigned a global scope despite being declared in the inner scope of a function. This means it is accessible in the outer scope on line 6 when it is passed to `console.log`. On line 2 `myVar` is assigned to the string `This is global` and that is what is passed to `console.log` and logged to the console on line 6.
+
+------------------------------------
+
+// #6
+
+let a = 7;
+
+function myValue(b) {
+  b += 10;
+}
+
+myValue(a);
+console.log(a);
+
+// This code will log `7`. This is because parameters a locally scoped variables. On line 1 the variable `a` is assigned to `7`. Passing it to the method on line `7` doesn't change what value it references because variables are pointers. When it is passed to the method `b` and `a` become aliases and both point to `7`. On line 4 `b` is reassigned to `b + 10` which evaluates to `17`. Integers and all the other primitive values in JS are immutable and reassignment just changes what a variable is pointing at so the variable `b` now points at `17` and `a` still points at `7`.
+
+------------------------------------
+
+// #7
+
+let a = 7;
+
+function myValue(a) {
+  a += 10;
+}
+
+myValue(a);
+console.log(a);
+
+// This will still log `7`. Parameters create local scoped variables. By naming the variable the same name as the outer scoped variable it creates variable shadowing. The parameter is still reassigned to `17` and the outer scoped  variable `a` still references `7` when it is passed to `console.log` which is why `7` is logged to the console.
+
+------------------------------------
+
+// #8
+
+let a = [1, 2, 3];
+
+function myValue(b) {
+  b[2] += 7;
+}
+
+myValue(a);
+console.log(a);
+
+This will log the array `[1, 2, 10]`. The variable `a` is declared to the global scope and assigned the value `[1, 2, 3]` on line 1. On line 7 the function is called passing the array referenced by `a` as an argument. Within the function the local variable `b` and `a` become aliases and both point to `7`. On line 4 bracket notation is used to access and modify the third element in the array. `b[2]` accesses the third element because arrays in JS are zero indexed meaning the first element has an index of 0 and the second element has an index of 1, so on and so forth. Line 4 access the element `3`, adds `7` and reassigns it to the third element. On line 8 the mutated array is logged to the console. This shows that arrays are mutable and that arrays passed into functions can be mutated.
+
+------------------------------------
+
+// #9
+
+console.log(a);
+
+var a = 1;
+
+This will log `undefined`. In the creation phase identifiers for variable, function, and class declarations are noted with their scope. The variable on line 3 is declared and JS knows that this variable exists. Then the execution phase begins. It isn't assigned a value until line 3 after it is passed to `console.log`. Execution happens line by line so on line 1 `a` hasn't been assigned and has a value of `undefined`.
+
+------------------------------------
+
+// #10
+
+logValue();
+
+function logValue() {
+  console.log('Hello, world!');
+}
+
+// This will log `Hello world!` to the console. Even though the function `logValue` is declared after it is called on line 1 because of hoisting where variable, function, and class declarations are found and their scopes logged before the program executes the code can still find and execute the function `logValue`. In contrast to variable declarations where only the variable declaration and not any accompanying assignment is hoisted, with functions the whole function definition is hoisted.
+
+
+-----------------------------------
+
+// #10b
+var logValue = 'foo';
+
+function logValue() {
+  console.log('Hello, world!');
+}
+
+console.log(typeof logValue);
+
+// This will log (string) to the console. The hoisted version of this code is the following:
+
+var logValue
+
+function logValue() {
+  console.log('Hello, world!');
+}
+
+logValue = 'foo';
+
+console.log(typeof logValue);
+
+After the variable declaration is hoisted the function declaration is hoisted changing `logValue` to reference a function. Then the execution phase begins. The variable is reassigned again to the string `foo`. The typeof a string is `string` which is logged to the console.

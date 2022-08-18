@@ -1,0 +1,242 @@
+# 1
+
+function say() {
+  var a;
+
+  if (false) {
+    a = 'hello from inside a block';
+  }
+
+  console.log(a);
+}
+
+say();
+
+Variables declared with `var` have function level scope so after hoisting the example becomes: The variable `a` is declared during the creation phase and an identifier is placed in function scope of `say`. The conditional of the `if` statement is `false` so the code on line 4 is not ran and the variable `a` remains unassigned line `7` will output `undefined`.
+
+
+---------------------------------------------
+
+// #2
+
+function say() {
+  if (false) {
+    let a = 'hello from inside a block';
+  }
+
+  console.log(a);
+}
+
+say();
+
+Variables declared with `let` have block level scope. This means `a` is only accessible within the `if` clause and line 6 raises an error.
+
+---------------------------------------------
+
+// #3
+
+function hello() {
+  var a
+  a = 'hello';
+  console.log(a);
+
+  if (false) {
+    a = 'hello again';
+  }
+}
+
+hello();
+console.log(a);
+
+After hoisting the example is: Variable `a` is scoped to the function. Since there is no variable `a` in the global scope then line 11 raises an ReferenceError.
+
+-------------------------------------------------
+
+// #4
+
+function hello() {
+  a = 'hello';
+  console.log(a);
+
+  if (false) {
+    let a
+    a = 'hello again';
+  }
+}
+
+hello();
+console.log(a);
+
+
+The scope of the variable declaration on line 6 is the `if` statement. Since there is not a previous declaration of the variable `a` within scope on line 2 this is a global variable that is therefor accessible on line 11. This is why the code outputs `'hello'` twice.
+
+
+--------------------------------------------------------
+
+// #5
+var a;
+a = 'hello';
+
+for (var index = 0; index < 5; index += 1) {
+  var a = index;
+}
+
+console.log(a);
+
+The variable declaration on line 81 is hoisted to the top where the variable is already declared. This means that line 81 is variable reassignment and the last assignment
+happens when `index` is `4` so line 7 will output `4`
+
+------------------------------------------------------
+
+// #6
+
+let a = 'hello';
+
+for (let index = 0; index < 5; index += 1) {
+  let a = index;
+}
+
+console.log(a);
+
+This one does also does not cause an error, but that is because the variables declared with `let` and `const` have block scope so the variable on line 4 is shadowing the
+variable declared in the global scope. Within the scope of the block the variable `a` will terminate the loop with a value of `4` before being destroyed. The variable
+`a` on line 7 is the same as the variable on line 1 and so line 7 outputs `'hello'`. It is not the same variable as line 4 which is why line 7 doesn't output `4`.
+
+---------------------------------------------------------
+
+// #7
+let a
+
+a = 1;
+
+function foo() {
+  a = 2;
+  // global variable `a` now has value 2
+  let bar = function() {
+    a = 3;
+    // global variable 'a' will have value 3 if this function is called
+    return 4;
+  };
+
+  return bar();
+  // the function `bar` is called so global variable `a` now has value 3
+  // `bar` returns `4` so this method returns `4`
+}
+
+console.log(foo());
+// logs the return of `foo` which is 4
+console.log(a);
+// logs the value of the global variable `a` which was last set to `3
+
+This code will output `4` then `3`. Line 13 logs the return of the `foo ` method which is `4`.
+Line 14 logs the current value of `a` a global variable declared on line 1. This variable is reassigned on line 4. It is also assigned on line 6 within the function `bar`
+which was called on line 10 of the `foo` method. Since the method `foo` is called on line 13 and within the method definition the method `bar` is called on line 10 which
+reassigns `a` to the final value of `3`. This is what the code outputs on line 14.
+
+
+--------------------------------------------------
+
+// #8
+
+var a
+a = 'global';
+
+function checkScope() {
+  var a;
+  const nested;
+
+  a = 'local';
+
+  const nested = function() {
+    var a;
+
+    a = 'nested';
+    let superNested = () => {
+      a = 'superNested'; // assigns the variable `a` that was referencing `nested`
+
+      return a;
+    };
+
+    return superNested(); // returns `superNested`
+  };
+
+  return nested(); returns `superNested`
+}
+
+console.log(checkScope());
+console.log(a);
+
+The function `checkScope` returns the string `'superNested'` on line 18 which is logged to the console. The `a` on line 6 and line 8 are the same variable
+which have function scope and are scoped to the anyonomous function assigned to the constant `nested`. This variable is separate from `a` on line 4 and which is
+also different from the globally scoped variable on line 1. The global variable `a` assigned to the string `global` is the only variable `a` within scope on line 19
+so this line outputs `'global'`
+
+
+--------------------------------------------
+
+let a
+let b
+
+function setScope(foo) {
+  foo = 'inner';
+  b = 'inner';
+}
+
+a = 'outer';
+b = 'outer';
+
+console.log(a);  // logs 'outer'
+console.log(b);  // logs 'outer'
+setScope(a);     // sets b to `inner`, also sets the parameter foo to 'inner' as a local variable which doesn't affect the code
+console.log(a);  // logs 'outer'
+console.log(b);  // logs 'inner'
+
+The code outputs 'outer', 'outer', 'outer', and 'inner'.
+The variable `a` is passed to the function `setScope` on line 6. Within the method definition there is one parameter `foo`. On line 11 `foo` is reassigned to the
+string 'inner' this doesn't affect the value of the variable passed in. `a` continues to point to the string 'outer' when it is passed to the function `console.log` on line 7. line 8 outputs `outer` because the global variable `b` is accessible in the inner scope of the function and reassigned to `inner` within the method.
+
+---------------------------------------------
+
+let total = 50;
+let increment = 15;
+
+function incrementBy(increment) {
+  total += increment;
+}
+
+console.log(total); // logs 50
+incrementBy(10);    // sets the value of  `total` to `50 + 10 = 60`
+console.log(total); // total is now 60, logs 60 to console
+console.log(increment);  // increment is still 15
+
+The output of this code is
+```ruby
+50
+60
+15
+```
+On line 9 the method `incrementBy` is called passed `10` as the argument. The local variable `increment` is shadowing the variable `increment` defined on line 2.
+The local variable `increment` references the value `10` which was passed as an argument. It is separate from the global variable on line 2 which references `15`. Thus
+when total is assigned to `total + increment` it becomes `50 + 10`. The final value of total is `60`
+
+--------------------------------------------
+
+let a
+var setScope = function () {
+  a = 'inner';
+};
+
+a = 'outer';
+
+console.log(a);  // logs 'outer'
+setScope();      // within the function the globally scope variable `a` is reassigned to `inner`
+console.log(a);  // logs 'inner'
+
+The output of the code will be
+```ruby
+outer
+inner
+```
+
+Line 3 outputs the string `outer` because the variable `a` is declared and assigned that value on line 1. On line 4 the method `setScope` is called. The next line outputs `inner`, because within the method called on the previous line the global variable `a` is accessible to be reassigned to the string 'inner'. After calling the function
+`setScope` the global variable `a` now references the string `inner` which is logged to the console.
